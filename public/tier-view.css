@@ -1,0 +1,101 @@
+.tier-board {
+  overflow: hidden;
+  border: 2px solid #1f2421;
+  background: #cfcfcf;
+}
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  min-height: 190px;
+  border-bottom: 2px solid #1f2421;
+}
+
+.tier-row:last-child { border-bottom: 0; }
+
+.tier-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 18px 12px;
+  border-right: 2px solid #1f2421;
+  color: #111;
+  font-size: clamp(28px, 3vw, 45px);
+  font-weight: 500;
+  text-align: center;
+}
+
+.tier-five .tier-label { background: #ee3224; }
+.tier-four .tier-label { background: #f4c84a; }
+.tier-three .tier-label { background: #fff200; }
+.tier-two .tier-label { background: #fbf0cd; }
+.tier-one .tier-label { background: #fff; }
+.tier-unrated .tier-label { background: #dde2df; font-size: 28px; }
+
+.tier-restaurants {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 16px;
+  background: #cfcfcf;
+}
+
+.tier-empty {
+  margin: auto;
+  color: #777;
+  font-size: 14px;
+}
+
+.tier-restaurant {
+  width: 150px;
+  flex: 0 0 150px;
+  border: 1px solid #aeb1af;
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.tier-restaurant:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+
+.tier-photo-wrap { position: relative; }
+.tier-restaurant .card-photo { width: 100%; height: 100px; }
+
+.tier-admin-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 3px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .92);
+}
+
+.tier-admin-actions .icon-button { width: 28px; height: 28px; }
+
+.tier-restaurant-info { padding: 9px 10px 10px; }
+.tier-restaurant-info h3 { overflow: hidden; margin: 0 0 5px; font-size: 14px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.tier-restaurant-info p { margin: 0; color: #606863; font-size: 11px; }
+.tier-restaurant-info strong { color: #202522; font-size: 16px; }
+
+.tier-login-required {
+  padding: 80px 24px;
+  background: #fff;
+  text-align: center;
+}
+
+.tier-login-required h3 { margin: 0 0 8px; font-size: 24px; }
+.tier-login-required p { margin: 0 0 22px; color: var(--muted); }
+
+@media (max-width: 700px) {
+  .tier-row {
+    grid-template-columns: 92px minmax(0, 1fr);
+    min-height: 160px;
+    content-visibility: auto;
+    contain-intrinsic-size: 160px;
+  }
+  .tier-label { padding: 12px 6px; font-size: 24px; }
+  .tier-unrated .tier-label { font-size: 19px; }
+  .tier-restaurants { gap: 10px; padding: 10px; }
+  .tier-restaurant { width: 125px; flex-basis: 125px; }
+  .tier-restaurant .card-photo { height: 82px; }
+}

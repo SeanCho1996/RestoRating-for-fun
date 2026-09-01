@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="添加或更新你的Newmarket饭馆评分。">
+  <title>添加或更新评分 · Newmarket 食评</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/simple.css">
+  <link rel="stylesheet" href="/drag-rate.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="返回Newmarket 食评排名">
+      <span class="brand-mark">食</span>
+      <span>Newmarket 食评<small>RESTO RATING</small></span>
+    </a>
+    <nav>
+      <span class="rate-user" id="rateUser"></span>
+      <a class="btn btn-ghost rate-back" href="/">返回排名</a>
+    </nav>
+  </header>
+
+  <main class="drag-rate-page">
+    <header class="drag-rate-heading">
+      <span class="eyebrow">你的评价</span>
+      <h1>添加或更新评分</h1>
+      <p>把饭馆拖到对应等级。已有排名也可以拖到其他等级进行更新。</p>
+    </header>
+
+    <section id="rateLoginRequired" class="rate-message hidden">
+      <h2>请先登录</h2>
+      <p>登录后才能添加或更新你的评分。</p>
+      <a class="btn btn-primary" href="/">返回首页登录</a>
+    </section>
+
+    <section id="rateList" class="rate-list" aria-live="polite"></section>
+    <section id="rateEmpty" class="rate-message hidden">
+      <h2>暂无饭馆</h2>
+      <p>管理员添加饭馆后即可评分。</p>
+    </section>
+  </main>
+
+  <div id="rateToast" class="toast-region" aria-live="assertive"></div>
+  <script src="/drag-rate.js" defer></script>
+</body>
+</html>

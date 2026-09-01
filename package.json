@@ -1,0 +1,16 @@
+{
+  "name": "newmarket-resto-rating",
+  "version": "1.0.0",
+  "private": true,
+  "description": "校园食堂与餐厅评分平台",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node --env-file=.env server.js",
+    "dev": "NODE_ENV=development node --env-file=.env server.js",
+    "test": "node --test",
+    "optimize:images": "node scripts/optimize-existing-images.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

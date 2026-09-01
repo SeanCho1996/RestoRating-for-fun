@@ -1,0 +1,8 @@
+data/*.json
+data/*.tmp
+uploads/*
+!uploads/.gitkeep
+.env
+npm-debug.log*
+.DS_Store
+data/original-image-backups/

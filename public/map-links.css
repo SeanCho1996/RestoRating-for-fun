@@ -1,0 +1,3 @@
+.tier-restaurant[data-map-url] { cursor: pointer; }
+.tier-restaurant[data-map-url]:focus-visible { outline: 3px solid #276a46; outline-offset: 2px; }
+.map-hint { display: block; margin-top: 5px; color: #276a46; font-size: 10px; font-weight: 600; }

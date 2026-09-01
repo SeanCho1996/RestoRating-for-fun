@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Newmarket周边饭馆评分与排名。">
+  <title>Newmarket 食评 · 今天吃哪家</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/simple.css">
+  <link rel="stylesheet" href="/photo-preview.css">
+  <link rel="stylesheet" href="/tier-view.css">
+  <link rel="stylesheet" href="/rate.css">
+  <link rel="stylesheet" href="/map-links.css">
+  <link rel="stylesheet" href="/dialog-toast.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Newmarket 食评首页">
+      <span class="brand-mark">食</span>
+      <span>Newmarket 食评<small>RESTO RATING</small></span>
+    </a>
+    <nav id="navActions" aria-label="账户导航">
+      <button class="btn btn-ghost" data-action="login">登录</button>
+      <button class="btn btn-primary" data-action="register">加入评分</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Newmarket附近饭馆从夯到拉排名</span>
+        <h1>看看同学们怎么评价</h1>
+        <p>登录后查看餐厅的平均评分与排名。餐厅会按照同学们的评价显示在对应等级。</p>
+        <p>Newmarket周边餐馆列表火热更新中...</p>
+        <p>如果你心仪的餐馆暂未出现在列表中，请联系管理员（<a href="mailto:zzha584@aucklanduni.ac.nz">zzha584@aucklanduni.ac.nz</a>）验证添加。</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="plate"><span>夯</span></div>
+        <div class="orbit orbit-one">顶级</div>
+        <div class="orbit orbit-two">拉完了</div>
+        <div class="spark spark-one">✦</div>
+        <div class="spark spark-two">✦</div>
+      </div>
+    </section>
+
+    <section class="content" id="restaurantsSection">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">饭馆列表</span>
+          <h2>饭馆评分榜</h2>
+        </div>
+        <button class="btn btn-dark hidden" id="addRestaurantButton">＋ 添加餐厅</button>
+      </div>
+      <div id="restaurantGrid" class="restaurant-grid" aria-live="polite"></div>
+      <div id="emptyState" class="empty-state hidden">
+        <div>🍽️</div>
+        <h3>暂无饭馆</h3>
+        <p>管理员添加饭馆后，用户即可提交评分。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="brand brand-footer"><span class="brand-mark">食</span><span>Newmarket 食评</span></div>
+    <p>Dev by 赵子枭 · <span id="year"></span></p>
+  </footer>
+
+  <dialog id="authDialog" class="modal">
+    <button class="modal-close" aria-label="关闭" data-close>×</button>
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab active" data-tab="login">登录</button>
+      <button class="auth-tab" data-tab="register">注册</button>
+    </div>
+    <form id="loginForm" class="form-stack">
+      <div><span class="eyebrow">欢迎回来</span><h2>登录后继续评分</h2></div>
+      <label>邮箱<input type="email" name="email" autocomplete="email" required placeholder="YourUPI@aucklanduni.ac.nz"></label>
+      <label>密码<input type="password" name="password" autocomplete="current-password" required placeholder="输入密码"></label>
+      <button class="btn btn-primary btn-full" type="submit">登录</button>
+      <button class="text-button" type="button" id="resendButton">没有收到验证邮件？重新发送</button>
+      <button class="text-button" type="button" id="forgotPasswordButton">忘记密码？通过邮箱重置</button>
+    </form>
+    <form id="registerForm" class="form-stack hidden">
+      <div><span class="eyebrow">创建账号</span><h2>创建你的评分账号</h2></div>
+      <label>昵称<input type="text" name="username" minlength="2" maxlength="30" autocomplete="nickname" required placeholder="大家怎么称呼你"></label>
+      <label>奥大学生邮箱<input type="email" name="email" autocomplete="email" required pattern="[A-Za-z0-9._%+-]+@aucklanduni[.]ac[.]nz" title="请输入 @aucklanduni.ac.nz 学生邮箱" placeholder="你的UPI@aucklanduni.ac.nz"></label>
+      <label>密码<input type="password" name="password" minlength="8" autocomplete="new-password" required placeholder="至少 8 个字符"></label>
+      <button class="btn btn-primary btn-full" type="submit">注册并验证邮箱</button>
+      <p class="form-note">仅支持 @aucklanduni.ac.nz 学生邮箱。注册后，我们会发送一封有效期为 24 小时的验证邮件。</p>
+    </form>
+  </dialog>
+
+  <dialog id="restaurantDialog" class="modal">
+    <button class="modal-close" aria-label="关闭" data-close>×</button>
+    <form id="restaurantForm" class="form-stack">
+      <div><span class="eyebrow">管理员操作</span><h2 id="restaurantDialogTitle">添加餐厅</h2></div>
+      <input type="hidden" name="id">
+      <label>餐厅名称<input type="text" name="name" minlength="2" maxlength="80" required placeholder="例如：金味德"></label>
+      <label>Google 地图链接<input type="url" name="googleMapsUrl" required placeholder="https://maps.app.goo.gl/..."><span class="form-note">在 Google Maps 中打开饭馆，点击“分享”并粘贴链接。</span></label>
+      <label>餐厅照片 <span id="photoOptional" class="label-hint"></span>
+        <span class="file-drop"><input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/gif"><span id="fileLabel">点击选择照片（最大 5MB）</span></span>
+      </label>
+      <button class="btn btn-primary btn-full" type="submit">保存餐厅</button>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog" class="modal confirm-modal">
+    <div class="danger-icon">!</div><h2>确定删除这家餐厅？</h2>
+    <p>餐厅及其全部评分都会被永久删除，此操作无法撤销。</p>
+    <div class="confirm-actions"><button class="btn btn-ghost" data-close>取消</button><button class="btn btn-danger" id="confirmDelete">确认删除</button></div>
+  </dialog>
+
+  <script src="/map-links.js" defer></script>
+  <div id="toastRegion" class="toast-region" aria-live="assertive"></div>
+  <script src="/tier-view.js" defer></script>
+  <script src="/app.js" defer></script>
+  <script src="/photo-preview.js" defer></script>
+</body>
+</html>

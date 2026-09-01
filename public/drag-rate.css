@@ -1,0 +1,120 @@
+.drag-rate-page {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 44px 0 80px;
+}
+
+.drag-rate-heading { margin-bottom: 26px; }
+.drag-rate-heading h1 { margin: 8px 0 8px; }
+.drag-rate-heading p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+.unrated-section { margin-bottom: 24px; }
+.unrated-section h2 { margin: 0 0 10px; font-size: 18px; }
+
+.unrated-pool {
+  display: flex;
+  min-height: 150px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 2px dashed #aeb4b0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.drag-board { overflow: hidden; border: 2px solid #1f2421; background: #cfcfcf; }
+.drag-row { display: grid; grid-template-columns: 160px minmax(0, 1fr); min-height: 180px; border-bottom: 2px solid #1f2421; }
+.drag-row:last-child { border-bottom: 0; }
+
+.drag-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 15px 10px;
+  border-right: 2px solid #1f2421;
+  color: #111;
+  font-size: clamp(27px, 3vw, 43px);
+  font-weight: 500;
+  text-align: center;
+}
+
+.drag-row[data-value="5"] .drag-label { background: #ee3224; }
+.drag-row[data-value="4"] .drag-label { background: #f4c84a; }
+.drag-row[data-value="3"] .drag-label { background: #fff200; }
+.drag-row[data-value="2"] .drag-label { background: #fbf0cd; }
+.drag-row[data-value="1"] .drag-label { background: #fff; }
+
+.drag-dropzone {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #cfcfcf;
+  transition: background .15s, box-shadow .15s;
+}
+
+.drag-dropzone.drag-over {
+  background: #dce9e0;
+  box-shadow: inset 0 0 0 4px #397653;
+}
+
+.drag-card {
+  width: 140px;
+  flex: 0 0 140px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, .12);
+  cursor: grab;
+  user-select: none;
+}
+
+.drag-card:active { cursor: grabbing; }
+.drag-card.selected { border-color: #266844; box-shadow: 0 0 0 3px rgba(38, 104, 68, .2); }
+.drag-card.saving { opacity: .55; pointer-events: none; }
+.drag-card img { display: block; width: 100%; height: 92px; object-fit: cover; pointer-events: none; }
+.drag-card-info { padding: 8px 9px 9px; pointer-events: none; }
+.drag-card-info strong { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.drag-card-info span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+
+.pool-empty,
+.drop-empty { width: 100%; color: #747b77; font-size: 13px; text-align: center; pointer-events: none; }
+
+.drag-help {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.drag-help::before { content: '提示'; padding: 2px 6px; border-radius: 4px; background: #e5e9e6; color: #455049; font-weight: 700; }
+
+.rate-message {
+  padding: 70px 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+}
+
+.rate-message p { margin-bottom: 24px; color: var(--muted); }
+.rate-user { font-size: 14px; font-weight: 600; }
+.rate-back { color: var(--ink); text-decoration: none; }
+
+@media (max-width: 700px) {
+  .drag-rate-page { width: min(100% - 24px, 1180px); padding-top: 34px; }
+  .rate-user { display: none; }
+  .drag-row { grid-template-columns: 88px minmax(0, 1fr); min-height: 155px; }
+  .drag-label { padding: 10px 5px; font-size: 23px; }
+  .drag-dropzone { gap: 8px; padding: 9px; }
+  .drag-card { width: 112px; flex-basis: 112px; }
+  .drag-card img { height: 74px; }
+  .unrated-pool { gap: 8px; padding: 9px; }
+}

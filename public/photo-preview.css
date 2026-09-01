@@ -1,0 +1,14 @@
+.photo-preview {
+  display: block;
+  width: 100%;
+  height: 210px;
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f2f3f2;
+  object-fit: cover;
+}
+
+.photo-preview.hidden {
+  display: none;
+}
