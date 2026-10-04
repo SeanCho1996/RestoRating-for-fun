@@ -156,7 +156,7 @@ function renderNav() {
       const ratingLink = document.createElement('a');
       ratingLink.className = 'btn btn-primary rating-nav-button';
       ratingLink.href = '/rate.html';
-      ratingLink.textContent = '添加/更新你的排名';
+      ratingLink.innerHTML = '<span class="rating-nav-full">添加/更新你的排名</span><span class="rating-nav-short">更新排名</span>';
       nav.querySelector('.user-chip').after(ratingLink);
       const pickerButton = document.createElement('button');
       pickerButton.className = 'btn btn-ghost food-picker-nav-button';
