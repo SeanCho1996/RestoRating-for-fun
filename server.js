@@ -96,6 +96,7 @@ function restaurantView(restaurant, user) {
     photoUrl: restaurant.photoUrl,
     googleMapsUrl: mapUrlForRestaurant(restaurant),
     createdAt: restaurant.createdAt,
+    announcementAt: restaurant.announcementAt || null,
     ownRating: own?.value || null,
     stats: canSeeStats ? { average: average === null ? null : Number(average.toFixed(2)), count: ratings.length, distribution } : null,
   };
@@ -217,7 +218,8 @@ async function handleApi(req, res, url) {
     if (name.length < 2 || name.length > 80) fail(400, '餐厅名称应为 2 至 80 个字符');
     const googleMapsUrl = normalizeGoogleMapsUrl(fields.googleMapsUrl);
     const image = await saveImage(files.photo);
-    const restaurant = { id: crypto.randomUUID(), name, ...image, googleMapsUrl, createdBy: admin.id, createdAt: new Date().toISOString() };
+    const createdAt = new Date().toISOString();
+    const restaurant = { id: crypto.randomUUID(), name, ...image, googleMapsUrl, createdBy: admin.id, createdAt, announcementAt: createdAt };
     await store.mutate((data) => data.restaurants.push(restaurant));
     return json(res, 201, { restaurant: restaurantView(restaurant, admin) });
   }

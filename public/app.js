@@ -5,6 +5,9 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const authDialog = $('#authDialog');
 const restaurantDialog = $('#restaurantDialog');
 const confirmDialog = $('#confirmDialog');
+const foodPickerDialog = $('#foodPickerDialog');
+const NEW_RESTAURANT_STORAGE_KEY = 'newmarket-resto-seen-announcements-v1';
+let foodPickerRun = 0;
 
 async function api(path, options = {}) {
   const response = await fetch(path, options);
@@ -34,6 +37,100 @@ function toast(message, type = 'success', link) {
   setTimeout(() => item.remove(), link ? 12000 : 4500);
 }
 
+function showNewRestaurantNotice() {
+  const notice = $('#newRestaurantNotice');
+  if (!notice) return;
+
+  let seen = [];
+  try { seen = JSON.parse(localStorage.getItem(NEW_RESTAURANT_STORAGE_KEY) || '[]'); }
+  catch { seen = []; }
+  const seenIds = new Set(Array.isArray(seen) ? seen : []);
+  const unseen = state.restaurants
+    .filter((restaurant) => restaurant.announcementAt && !seenIds.has(restaurant.id))
+    .sort((left, right) => new Date(right.announcementAt) - new Date(left.announcementAt));
+  if (!unseen.length) return;
+
+  const names = unseen.slice(0, 4).map((restaurant) => `<li>${escapeHtml(restaurant.name)}</li>`).join('');
+  const remainder = unseen.length > 4 ? `<li>以及另外 ${unseen.length - 4} 家</li>` : '';
+  notice.innerHTML = `
+    <button class="new-restaurant-close" type="button" aria-label="关闭新增餐厅通知">×</button>
+    <span class="new-restaurant-kicker">新餐厅上线</span>
+    <strong>${unseen.length === 1 ? escapeHtml(unseen[0].name) : `新增 ${unseen.length} 家餐厅`}</strong>
+    ${unseen.length > 1 ? `<ul>${names}${remainder}</ul>` : '<p>快来看看同学们会把它排在哪一级。</p>'}
+    <button class="new-restaurant-action" type="button">查看餐厅</button>`;
+  notice.classList.remove('hidden');
+
+  unseen.forEach((restaurant) => seenIds.add(restaurant.id));
+  try { localStorage.setItem(NEW_RESTAURANT_STORAGE_KEY, JSON.stringify([...seenIds])); }
+  catch { /* Private browsing or disabled storage: the popup still works. */ }
+}
+
+function weightedRestaurantPick(restaurants) {
+  const weightedTotal = restaurants.reduce((total, restaurant) => total + (restaurant.ownRating || 1), 0);
+  let choice = Math.random() * weightedTotal;
+  for (const restaurant of restaurants) {
+    choice -= restaurant.ownRating || 1;
+    if (choice < 0) return restaurant;
+  }
+  return restaurants.at(-1);
+}
+
+function finishFoodPicker(winner, runId) {
+  if (runId !== foodPickerRun) return;
+  $('#foodPickerName').textContent = winner.name;
+  $('#foodPickerRating').textContent = winner.ownRating
+    ? `你的评分：${state.labels[winner.ownRating]}`
+    : '你还没有评价过这家餐厅';
+  const photo = $('#foodPickerPhoto');
+  photo.src = winner.thumbnailUrl || winner.photoUrl;
+  photo.alt = `${winner.name}的照片`;
+  const mapLink = $('#foodPickerMap');
+  mapLink.href = winner.googleMapsUrl;
+  mapLink.classList.toggle('hidden', !winner.googleMapsUrl);
+  $('#foodPickerResult').classList.remove('hidden');
+  $('#pickAgainButton').disabled = false;
+}
+
+function runFoodPicker() {
+  if (!state.restaurants.length) return toast('暂时没有可以选择的餐厅', 'error');
+  const runId = ++foodPickerRun;
+  const winner = weightedRestaurantPick(state.restaurants);
+  const sequence = Array.from({ length: 22 }, () => weightedRestaurantPick(state.restaurants));
+  sequence.push(winner);
+  const track = $('#foodPickerTrack');
+  track.classList.remove('is-spinning');
+  track.style.transform = 'translateY(0)';
+  track.replaceChildren(...sequence.map((restaurant) => {
+    const item = document.createElement('div');
+    item.className = 'food-picker-item';
+    item.textContent = restaurant.name;
+    return item;
+  }));
+  $('#foodPickerResult').classList.add('hidden');
+  $('#foodPickerMap').classList.add('hidden');
+  $('#pickAgainButton').disabled = true;
+
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    track.style.transform = `translateY(-${(sequence.length - 1) * 72}px)`;
+    finishFoodPicker(winner, runId);
+    return;
+  }
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (runId !== foodPickerRun) return;
+    track.classList.add('is-spinning');
+    track.style.transform = `translateY(-${(sequence.length - 1) * 72}px)`;
+  }));
+  track.addEventListener('transitionend', () => finishFoodPicker(winner, runId), { once: true });
+  setTimeout(() => finishFoodPicker(winner, runId), 5400);
+}
+
+function openFoodPicker() {
+  if (!state.user || state.user.role !== 'user') return showAuth('login');
+  foodPickerDialog.showModal();
+  runFoodPicker();
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 }
@@ -61,6 +158,12 @@ function renderNav() {
       ratingLink.href = '/rate.html';
       ratingLink.textContent = '添加/更新你的排名';
       nav.querySelector('.user-chip').after(ratingLink);
+      const pickerButton = document.createElement('button');
+      pickerButton.className = 'btn btn-ghost food-picker-nav-button';
+      pickerButton.type = 'button';
+      pickerButton.dataset.action = 'food-picker';
+      pickerButton.textContent = '今天吃什么';
+      ratingLink.after(pickerButton);
     }
   }
   $('#addRestaurantButton').classList.toggle('hidden', state.user?.role !== 'admin');
@@ -99,6 +202,7 @@ async function load() {
   const [auth, restaurants] = await Promise.all([api('/api/auth/me'), api('/api/restaurants')]);
   state.user = auth.user; state.labels = restaurants.ratingLabels; state.restaurants = restaurants.restaurants;
   renderNav(); renderRestaurants();
+  showNewRestaurantNotice();
 }
 
 function setSubmitting(form, busy) {
@@ -109,8 +213,14 @@ function setSubmitting(form, busy) {
 }
 
 document.addEventListener('click', async (event) => {
+  if (event.target.closest('.new-restaurant-close')) $('#newRestaurantNotice').classList.add('hidden');
+  if (event.target.closest('.new-restaurant-action')) {
+    $('#newRestaurantNotice').classList.add('hidden');
+    $('#restaurantsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (action === 'login' || action === 'register') showAuth(action);
+  if (action === 'food-picker') openFoodPicker();
   if (action === 'logout') {
     await api('/api/auth/logout', { method: 'POST' }); state.user = null; await load(); toast('已安全退出');
   }
@@ -134,6 +244,7 @@ document.addEventListener('click', async (event) => {
 $$('.auth-tab').forEach((button) => button.addEventListener('click', () => switchTab(button.dataset.tab)));
 $('#addRestaurantButton').addEventListener('click', () => { const form = $('#restaurantForm'); form.reset(); form.elements.namedItem('id').value = ''; $('#restaurantDialogTitle').textContent = '添加餐厅'; $('#photoOptional').textContent = '（必填）'; $('#fileLabel').textContent = '点击选择照片（最大 5MB）'; restaurantDialog.showModal(); });
 $('#restaurantForm input[type="file"]').addEventListener('change', (event) => { $('#fileLabel').textContent = event.target.files[0]?.name || '点击选择照片（最大 5MB）'; });
+$('#pickAgainButton').addEventListener('click', runFoodPicker);
 
 $('#loginForm').addEventListener('submit', async (event) => {
   event.preventDefault(); setSubmitting(event.target, true);

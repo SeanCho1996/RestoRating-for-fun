@@ -17,3 +17,62 @@
   box-shadow: none;
   text-align: left;
 }
+
+.new-restaurant-notice {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 110;
+  width: min(360px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid #d8ddd9;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 14px 38px rgba(24, 34, 29, .2);
+  animation: new-restaurant-rise .35s ease-out;
+}
+
+.new-restaurant-notice strong { display: block; margin: 5px 30px 8px 0; font-size: 19px; }
+.new-restaurant-notice p { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.new-restaurant-notice ul { margin: 8px 0 14px; padding-left: 20px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.new-restaurant-kicker { color: var(--orange-dark); font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+.new-restaurant-close { position: absolute; top: 10px; right: 12px; border: 0; background: transparent; color: var(--muted); font-size: 24px; }
+.new-restaurant-action { border: 0; border-radius: 7px; padding: 9px 13px; background: var(--ink); color: #fff; font-weight: 700; }
+
+@keyframes new-restaurant-rise {
+  from { opacity: 0; transform: translateY(36px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 620px) {
+  .new-restaurant-notice { right: 16px; bottom: 16px; animation: new-restaurant-rise .3s ease-out !important; }
+}
+
+.food-picker-modal { width: min(92vw, 520px); text-align: center; }
+.food-picker-nav-button { border-color: #296445; background: #296445; color: #fff; }
+.food-picker-nav-button:hover,
+.food-picker-nav-button:focus-visible { border-color: #1f5037; background: #1f5037; color: #fff; }
+.food-picker-modal h2 { margin: 8px 0; font-size: 28px; }
+.food-picker-intro { margin: 0 auto 20px; max-width: 420px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.food-picker-window { height: 72px; overflow: hidden; border: 2px solid var(--ink); border-radius: 9px; background: #f3f1eb; }
+.food-picker-track { will-change: transform; }
+.food-picker-track.is-spinning { transition: transform 5s cubic-bezier(.12, .72, .16, 1) !important; }
+.food-picker-item { display: grid; place-items: center; height: 72px; padding: 0 16px; overflow: hidden; font-size: 20px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.food-picker-result { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 14px; align-items: center; margin-top: 16px; padding: 12px; border: 1px solid var(--line); border-radius: 9px; text-align: left; }
+.food-picker-result img { width: 104px; height: 76px; border-radius: 7px; object-fit: cover; }
+.food-picker-result span, .food-picker-result small { display: block; color: var(--muted); font-size: 12px; }
+.food-picker-result strong { display: block; margin: 3px 0; font-size: 20px; }
+.food-picker-actions { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+.food-picker-actions .btn { text-decoration: none; }
+
+@media (max-width: 620px) {
+  .site-header .brand > span:last-child { display: none; }
+  .food-picker-modal { padding: 28px 18px; }
+  .food-picker-track.is-spinning { transition: transform 5s cubic-bezier(.12, .72, .16, 1) !important; }
+  .food-picker-actions { align-items: stretch; flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .food-picker-track.is-spinning { transition: none !important; }
+}

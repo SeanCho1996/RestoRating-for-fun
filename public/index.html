@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/tier-view.css">
   <link rel="stylesheet" href="/rate.css">
   <link rel="stylesheet" href="/map-links.css">
-  <link rel="stylesheet" href="/dialog-toast.css">
+  <link rel="stylesheet" href="/dialog-toast.css?v=20261005-4">
 </head>
 <body>
   <header class="site-header">
@@ -109,10 +109,29 @@
     <div class="confirm-actions"><button class="btn btn-ghost" data-close>取消</button><button class="btn btn-danger" id="confirmDelete">确认删除</button></div>
   </dialog>
 
+  <dialog id="foodPickerDialog" class="modal food-picker-modal">
+    <button class="modal-close" aria-label="关闭" data-close>×</button>
+    <span class="eyebrow">今天吃什么</span>
+    <h2>让概率帮你选一家</h2>
+    <p class="food-picker-intro">你评分越高的餐厅，被选中的机会越大；未评分餐厅也会参与。</p>
+    <div class="food-picker-window" aria-live="polite">
+      <div id="foodPickerTrack" class="food-picker-track"></div>
+    </div>
+    <div id="foodPickerResult" class="food-picker-result hidden">
+      <img id="foodPickerPhoto" width="480" height="320" alt="">
+      <div><span>今天就吃</span><strong id="foodPickerName"></strong><small id="foodPickerRating"></small></div>
+    </div>
+    <div class="food-picker-actions">
+      <button id="pickAgainButton" class="btn btn-ghost" type="button">再抽一次</button>
+      <a id="foodPickerMap" class="btn btn-primary hidden" target="_blank" rel="noopener noreferrer">打开 Google 地图</a>
+    </div>
+  </dialog>
+
   <script src="/map-links.js" defer></script>
+  <aside id="newRestaurantNotice" class="new-restaurant-notice hidden" aria-live="polite" aria-label="新增餐厅通知"></aside>
   <div id="toastRegion" class="toast-region" aria-live="assertive"></div>
   <script src="/tier-view.js" defer></script>
-  <script src="/app.js" defer></script>
+  <script src="/app.js?v=20261005-3" defer></script>
   <script src="/photo-preview.js" defer></script>
 </body>
 </html>

@@ -41,6 +41,7 @@ test('完整权限、验证邮箱、餐厅与评分流程', async (t) => {
   form.set('photo', new Blob([Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64')], { type: 'image/png' }), 'canteen.png');
   const created = await request('/api/restaurants', { method: 'POST', cookie: adminCookie, body: form });
   assert.equal(created.response.status, 201);
+  assert.ok(created.body.restaurant.announcementAt, '新餐厅应带有通知时间');
   const restaurantId = created.body.restaurant.id;
 
   const rejectedRegistration = await request('/api/auth/register', {
